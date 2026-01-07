@@ -144,7 +144,7 @@ class CreateGoalViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val formattedAmount = String.format(Locale.US, "%.2f", amount!!).toDouble()
+                val formattedAmount = String.format(Locale("en", "KE"), "%.2f", amount!!).toDouble()
                 val result = createGoalUseCase(
                     name = trimmedName,
                     targetAmount = formattedAmount,

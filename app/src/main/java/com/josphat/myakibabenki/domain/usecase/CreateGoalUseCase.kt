@@ -16,7 +16,7 @@ class CreateGoalUseCase @Inject constructor(
         targetDate: Long? = null
     ): Result<Long> {
         return try {
-            val roundedAmount = String.format(Locale.US, "%.2f", targetAmount).toDouble()
+            val roundedAmount = String.format(Locale("en", "KE"), "%.2f", targetAmount).toDouble()
             val goal = Goal(
                 name = name,
                 targetAmount = roundedAmount,

@@ -45,7 +45,7 @@ data class CreateGoalUiState(
 
     fun getFormattedAmount(): String {
         return targetAmount.toDoubleOrNull()?.let { amount ->
-            String.format(Locale.US, "%.2f", amount)
+            String.format(Locale("en", "KE"), "%.2f", amount)
         } ?: targetAmount
     }
 }
