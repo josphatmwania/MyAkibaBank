@@ -1,5 +1,6 @@
 package com.josphat.myakibabenki.presentation.creategoal
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,12 +20,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -33,6 +37,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +59,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.josphat.myakibabenki.presentation.components.AppTopBar
 import com.josphat.myakibabenki.ui.theme.MyAkibaBenkiTheme
+import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateGoalScreen(
     onNavigateBack: () -> Unit,
@@ -62,6 +71,15 @@ fun CreateGoalScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    // Handle goal creation success with toast
+    LaunchedEffect(uiState.successMessage) {
+        uiState.successMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.onSuccessMessageDismissed()
+        }
+    }
 
     // Handle goal creation success
     LaunchedEffect(uiState.goalCreated) {
@@ -142,7 +160,8 @@ fun CreateGoalScreen(
             item {
                 TargetDateField(
                     value = uiState.targetDate,
-                    onValueChange = viewModel::updateTargetDate,
+                    onDateSelected = viewModel::updateTargetDate,
+                    isError = !uiState.isTargetDateValid,
                     enabled = !uiState.isLoading
                 )
             }
@@ -191,8 +210,8 @@ private fun GoalNameField(
             enabled = enabled,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-                focusedBorderColor = Color(0xFF4CAF50)
+                unfocusedBorderColor = if (isError) Color.Red else Color.Gray.copy(alpha = 0.5f),
+                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50)
             ),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -229,7 +248,10 @@ private fun GoalCategoryField(
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "Dropdown",
-                        tint = Color.Gray
+                        tint = Color.Gray,
+                        modifier = Modifier.clickable(enabled = enabled) {
+                            expanded = !expanded
+                        }
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
@@ -244,12 +266,16 @@ private fun GoalCategoryField(
 
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
+                onDismissRequest = { expanded = false }
             ) {
                 GoalCategory.entries.forEach { category ->
                     DropdownMenuItem(
-                        text = { Text(category.displayName) },
+                        text = {
+                            Text(
+                                text = category.displayName,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
                         onClick = {
                             onCategorySelected(category.displayName)
                             expanded = false
@@ -292,13 +318,13 @@ private fun TargetAmountField(
                     modifier = Modifier.padding(start = 16.dp, end = 8.dp)
                 )
             },
-            placeholder = { Text("10,000.00") },
+            placeholder = { Text("10000.00") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             isError = isError,
             enabled = enabled,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
+                unfocusedBorderColor = if (isError) Color.Red else Color.Gray.copy(alpha = 0.5f),
                 focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50)
             ),
             shape = RoundedCornerShape(8.dp),
@@ -307,13 +333,34 @@ private fun TargetAmountField(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TargetDateField(
     value: String,
-    onValueChange: (String) -> Unit,
+    onDateSelected: (Long) -> Unit,
+    isError: Boolean,
     enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    // Set up date picker with tomorrow as minimum date
+    val calendar = Calendar.getInstance()
+    calendar.add(Calendar.DAY_OF_YEAR, 1) // Tomorrow
+    val tomorrowMillis = calendar.timeInMillis
+
+    // Reset calendar to get current day end time for proper validation
+    val todayCalendar = Calendar.getInstance()
+    todayCalendar.set(Calendar.HOUR_OF_DAY, 23)
+    todayCalendar.set(Calendar.MINUTE, 59)
+    todayCalendar.set(Calendar.SECOND, 59)
+    todayCalendar.set(Calendar.MILLISECOND, 999)
+    val todayEndMillis = todayCalendar.timeInMillis
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = tomorrowMillis
+    )
+
     Column(modifier = modifier) {
         Text(
             text = "Savings Target Date",
@@ -326,25 +373,90 @@ private fun TargetDateField(
 
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
-            placeholder = { Text("24/08/2026") },
+            onValueChange = { },
+            readOnly = true,
+            placeholder = { Text("Select date") },
             trailingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Close, // Placeholder for calendar icon
-                    contentDescription = "Calendar",
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = "Open Calendar",
                     tint = Color(0xFF4CAF50),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable(enabled = enabled) {
+                            showDatePicker = true
+                        }
                 )
             },
-            enabled = false, // Disabled until calendar implementation
+            enabled = enabled,
+            isError = isError,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                disabledBorderColor = Color.Gray.copy(alpha = 0.3f),
-                disabledTextColor = Color.Gray
+                unfocusedBorderColor = if (isError) Color.Red else Color.Gray.copy(alpha = 0.5f),
+                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50)
             ),
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { showDatePicker = true }
         )
+    }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { selectedMillis ->
+                            // Validate that selected date is after today
+                            if (selectedMillis > todayEndMillis) {
+                                onDateSelected(selectedMillis)
+                                showDatePicker = false
+                            } else {
+                                // Keep dialog open and show error via ViewModel
+                                // The validation will be handled by the ViewModel
+                                onDateSelected(selectedMillis) // This will trigger validation error
+                            }
+                        }
+                    },
+                    enabled = datePickerState.selectedDateMillis != null
+                ) {
+                    Text(
+                        text = "OK",
+                        color = Color(0xFF4CAF50)
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(
+                        text = "Cancel",
+                        color = Color.Gray
+                    )
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+                showModeToggle = false,
+                title = {
+                    Text(
+                        text = "Select Target Date",
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                },
+                headline = {
+                    Text(
+                        text = "Choose a future date for your savings goal",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            )
+        }
     }
 }
 
