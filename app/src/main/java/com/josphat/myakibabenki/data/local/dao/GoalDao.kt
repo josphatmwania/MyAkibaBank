@@ -17,6 +17,12 @@ interface GoalDao {
     @Query("SELECT * FROM goals WHERE id = :goalId")
     suspend fun getGoalById(goalId: Long): GoalEntity?
 
+    @Query("SELECT COUNT(*) FROM goals")
+    suspend fun getGoalsCount(): Int
+
+    @Query("SELECT * FROM goals")
+    suspend fun getAllGoals(): List<GoalEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGoal(goal: GoalEntity): Long
 

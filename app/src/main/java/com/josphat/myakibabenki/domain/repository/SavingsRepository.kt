@@ -18,4 +18,9 @@ interface SavingsRepository {
     fun observeContributionsByGoal(goalId: Long): Flow<List<Contribution>>
     suspend fun addContribution(contribution: Contribution): Long
     suspend fun getGoalWithProgress(goalId: Long): GoalWithProgress?
+
+    // Verification operations
+    suspend fun getGoalsCount(): Int
+    suspend fun getContributionsCount(): Int
+    suspend fun verifyGoalExists(goalId: Long): Boolean
 }

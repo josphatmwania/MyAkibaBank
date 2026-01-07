@@ -156,7 +156,7 @@ class CreateGoalViewModel @Inject constructor(
                 )
 
                 result.fold(
-                    onSuccess = { goalId ->
+                    { goalId ->
                         _uiState.value = currentState.copy(
                             isLoading = false,
                             error = null,
@@ -164,7 +164,7 @@ class CreateGoalViewModel @Inject constructor(
                             successMessage = "Goal saved successfully"
                         )
                     },
-                    onFailure = { throwable ->
+                    { throwable ->
                         _uiState.value = currentState.copy(
                             isLoading = false,
                             error = throwable.message ?: "Failed to create goal"

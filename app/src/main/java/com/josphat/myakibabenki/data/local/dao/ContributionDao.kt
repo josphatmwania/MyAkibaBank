@@ -20,6 +20,15 @@ interface ContributionDao {
     @Query("SELECT SUM(amount) FROM contributions WHERE goalId = :goalId")
     suspend fun getTotalSavedForGoal(goalId: Long): Double?
 
+    @Query("SELECT COUNT(*) FROM contributions")
+    suspend fun getContributionsCount(): Int
+
+    @Query("SELECT COUNT(*) FROM contributions WHERE goalId = :goalId")
+    suspend fun getContributionsCountByGoal(goalId: Long): Int
+
+    @Query("SELECT * FROM contributions")
+    suspend fun getAllContributions(): List<ContributionEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertContribution(contribution: ContributionEntity): Long
 
