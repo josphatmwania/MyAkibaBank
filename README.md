@@ -1,6 +1,6 @@
 
 
-# Craft Weather App
+# My Akiba Benki
 
 My Akiba Benki is an Android application that helps users create savings goals and track their progress over time.
 
