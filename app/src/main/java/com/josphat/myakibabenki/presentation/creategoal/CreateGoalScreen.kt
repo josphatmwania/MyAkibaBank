@@ -128,18 +128,20 @@ fun CreateGoalScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             item {
                 Text(
                     text = "Please let's have the following:",
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color(0xFF1C1B1F),
+                        color = Color(0xFF757575),
                         fontSize = 16.sp
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
                 )
             }
 
@@ -179,7 +181,7 @@ fun CreateGoalScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             item {
@@ -188,6 +190,10 @@ fun CreateGoalScreen(
                     enabled = uiState.isFormValid && !uiState.isLoading,
                     isLoading = uiState.isLoading
                 )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
             item {
@@ -209,10 +215,10 @@ private fun GoalNameField(
         Text(
             text = "Goal Name",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color.Gray,
+                color = Color(0xFF757575),
                 fontWeight = FontWeight.Medium
             ),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp, top = 4.dp)
         )
         OutlinedTextField(
             value = value,
@@ -222,9 +228,9 @@ private fun GoalNameField(
             enabled = enabled,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = Color(0xFFF5F5F5),
-                focusedContainerColor = Color(0xFFF5F5F5),
-                unfocusedBorderColor = if (isError) Color.Red else Color.Transparent,
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White,
+                unfocusedBorderColor = if (isError) Color.Red else Color(0xFFE0E0E0),
                 focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
                 unfocusedTextColor = Color(0xFF1C1B1F),
                 focusedTextColor = Color(0xFF1C1B1F)
@@ -248,10 +254,10 @@ private fun GoalCategoryField(
         Text(
             text = "Goal Category",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color.Gray,
+                color = Color(0xFF757575),
                 fontWeight = FontWeight.Medium
             ),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp, top = 4.dp)
         )
 
         Box {
@@ -271,9 +277,9 @@ private fun GoalCategoryField(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                    focusedContainerColor = Color(0xFFF5F5F5),
-                    unfocusedBorderColor = Color.Transparent,
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedBorderColor = Color(0xFFE0E0E0),
                     focusedBorderColor = Color(0xFF4CAF50),
                     unfocusedTextColor = Color(0xFF1C1B1F),
                     focusedTextColor = Color(0xFF1C1B1F)
@@ -319,10 +325,10 @@ private fun TargetAmountField(
         Text(
             text = "Target Amount",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color.Gray,
+                color = Color(0xFF757575),
                 fontWeight = FontWeight.Medium
             ),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp, top = 4.dp)
         )
 
         OutlinedTextField(
@@ -344,9 +350,9 @@ private fun TargetAmountField(
             enabled = enabled,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = Color(0xFFF5F5F5),
-                focusedContainerColor = Color(0xFFF5F5F5),
-                unfocusedBorderColor = if (isError) Color.Red else Color.Transparent,
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White,
+                unfocusedBorderColor = if (isError) Color.Red else Color(0xFFE0E0E0),
                 focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
                 unfocusedTextColor = Color(0xFF1C1B1F),
                 focusedTextColor = Color(0xFF1C1B1F)
@@ -389,10 +395,10 @@ private fun TargetDateField(
         Text(
             text = "Savings Target Date",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color.Gray,
+                color = Color(0xFF757575),
                 fontWeight = FontWeight.Medium
             ),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp, top = 4.dp)
         )
 
         OutlinedTextField(
@@ -416,9 +422,9 @@ private fun TargetDateField(
             isError = isError,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = Color(0xFFF5F5F5),
-                focusedContainerColor = Color(0xFFF5F5F5),
-                unfocusedBorderColor = if (isError) Color.Red else Color.Transparent,
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White,
+                unfocusedBorderColor = if (isError) Color.Red else Color(0xFFE0E0E0),
                 focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
                 unfocusedTextColor = Color(0xFF1C1B1F),
                 focusedTextColor = Color(0xFF1C1B1F)
@@ -500,9 +506,11 @@ private fun CreateGoalButton(
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF4CAF50),
-            disabledContainerColor = Color.Gray.copy(alpha = 0.3f)
+            disabledContainerColor = Color(0xFFE0E0E0),
+            contentColor = Color.White,
+            disabledContentColor = Color.Gray
         ),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(12.dp),
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
@@ -516,8 +524,8 @@ private fun CreateGoalButton(
             Text(
                 text = "Create a Goal",
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White
+                    fontWeight = FontWeight.Bold,
+                    color = if (enabled) Color.White else Color.Gray
                 )
             )
         }
