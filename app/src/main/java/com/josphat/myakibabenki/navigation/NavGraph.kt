@@ -27,7 +27,6 @@ fun NavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        // Home Screen
         composable(route = Screen.Home.route) {
             HomeScreen(
                 onNavigateToCreateGoal = {
@@ -38,7 +37,6 @@ fun NavGraph(
             )
         }
 
-        // Create Goal Screen
         composable(route = Screen.CreateGoal.route) {
             CreateGoalScreen(
                 onNavigateBack = {
@@ -54,18 +52,12 @@ fun NavGraph(
             )
         }
 
-        // Goal Detail Screen (for future implementation)
         composable(
             route = Screen.GoalDetail.route,
             arguments = Screen.GoalDetail.arguments
         ) { backStackEntry ->
             val goalId = backStackEntry.arguments?.getLong("goalId") ?: -1L
             if (goalId != -1L) {
-                // TODO: Implement GoalDetailScreen
-                // GoalDetailScreen(
-                //     goalId = goalId,
-                //     onNavigateBack = { navigateBackSafely(navController) }
-                // )
                 Log.d(TAG, "GoalDetail screen requested for goalId: $goalId")
             } else {
                 Log.e(TAG, "Invalid goalId in GoalDetail route")
@@ -75,13 +67,6 @@ fun NavGraph(
     }
 }
 
-/**
- * Safely navigates to a destination, handling potential crashes.
- *
- * @param navController The NavController to use for navigation
- * @param route The destination route
- * @param onSuccess Optional callback when navigation succeeds
- */
 private fun navigateSafely(
     navController: NavHostController,
     route: String,
@@ -99,12 +84,6 @@ private fun navigateSafely(
     }
 }
 
-/**
- * Safely navigates back, handling potential crashes.
- *
- * @param navController The NavController to use for navigation
- * @param onSuccess Optional callback when navigation succeeds
- */
 private fun navigateBackSafely(
     navController: NavHostController,
     onSuccess: (() -> Unit)? = null

@@ -2,6 +2,7 @@ package com.josphat.myakibabenki.domain.usecase
 
 import com.josphat.myakibabenki.domain.model.Goal
 import com.josphat.myakibabenki.domain.repository.SavingsRepository
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,9 +16,10 @@ class CreateGoalUseCase @Inject constructor(
         targetDate: Long? = null
     ): Result<Long> {
         return try {
+            val roundedAmount = String.format(Locale.US, "%.2f", targetAmount).toDouble()
             val goal = Goal(
                 name = name,
-                targetAmount = targetAmount,
+                targetAmount = roundedAmount,
                 targetDate = targetDate,
                 createdAt = System.currentTimeMillis()
             )

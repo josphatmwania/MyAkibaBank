@@ -14,10 +14,9 @@ My Akiba Benki is built with the Model-View-ViewModel (MVVM) architecture with R
 - **Repository**: This is an additional layer between the ViewModel and the data source (in this case, the OpenWeatherMap API). ~ The Repository centralizes the data fetching mechanism, so if in the future we decide to add another data source, such as a local database for offline caching, the ViewModel wouldn't need to know where the data is coming from. The Repository will handle data retrieval, whether it's from the API, local database, or other sources.
 
 ~ In essence, this architecture ensures a separation of concerns, promoting a more scalable and maintainable codebase. It decouples the UI from the data and business logic, allowing each component to evolve independently as shown below.
+![mvvm_arch.png](app/screenshots/mvvm_arch.png)
 
-<img src="./screenshots/mvvm-arch.png">
-<img src="./screenshots/MVVM-diagram.png">
-
+![MVVM_diagram.png](app/screenshots/MVVM_diagram.png)
 
 
 ## 🛠 Tech Stack & Tools Used
@@ -49,12 +48,10 @@ My Akiba Benki is built with the Model-View-ViewModel (MVVM) architecture with R
 
 
 
-
 ## Database Inspection
 
-<img src="./screenshots/Database_Inspection.png">
 
-
+![Database_Inspection.jpg](app/screenshots/Database_Inspection.jpg)
 ## Setting the Project Locally
 
 - Git clone

@@ -5,7 +5,6 @@ package com.josphat.myakibabenki.navigation
  * This provides a single source of truth for all navigation destinations.
  */
 object Screens {
-    // Main screens
     val Home = Screen.Home
     val CreateGoal = Screen.CreateGoal
     val GoalDetail = Screen.GoalDetail

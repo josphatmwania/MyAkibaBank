@@ -32,13 +32,10 @@ sealed class Screen(
     val baseRoute: String
         get() = route.split("/").firstOrNull() ?: route
 
-    // Home screen - Main entry point
     object Home : Screen("home")
 
-    // Create Goal screen
     object CreateGoal : Screen("create_goal")
 
-    // Goal Detail screen (for future use)
     object GoalDetail : Screen(
         route = "goal_detail/{goalId}",
         arguments = listOf(

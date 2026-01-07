@@ -41,10 +41,8 @@ class CreateGoalViewModel @Inject constructor(
     }
 
     fun updateTargetAmount(amount: String) {
-        // Allow only digits, decimal point, and handle formatting
         val filteredAmount = amount.filter { it.isDigit() || it == '.' }
 
-        // Validate decimal format (max 2 decimal places)
         val isValidFormat = if (filteredAmount.contains('.')) {
             val parts = filteredAmount.split('.')
             parts.size <= 2 && (parts.size == 1 || parts[1].length <= 2)
@@ -57,7 +55,7 @@ class CreateGoalViewModel @Inject constructor(
             val isValid = filteredAmount.isNotBlank() &&
                     parsedAmount != null &&
                     parsedAmount > 0 &&
-                    parsedAmount <= 999999999.99 // Reasonable upper limit
+                    parsedAmount <= 999999999.99
 
             _uiState.value = _uiState.value.copy(
                 targetAmount = filteredAmount,
@@ -68,7 +66,6 @@ class CreateGoalViewModel @Inject constructor(
     }
 
     fun updateTargetDate(dateMillis: Long) {
-        // Get current time and set up end-of-day validation
         val currentCalendar = Calendar.getInstance()
         currentCalendar.set(Calendar.HOUR_OF_DAY, 23)
         currentCalendar.set(Calendar.MINUTE, 59)
@@ -76,7 +73,6 @@ class CreateGoalViewModel @Inject constructor(
         currentCalendar.set(Calendar.MILLISECOND, 999)
         val todayEndMillis = currentCalendar.timeInMillis
 
-        // Validate that the selected date is after today (not today or past)
         val isValidDate = dateMillis > todayEndMillis
 
         val formattedDate = try {
@@ -96,7 +92,6 @@ class CreateGoalViewModel @Inject constructor(
     fun createGoal() {
         val currentState = _uiState.value
 
-        // Validate all fields before proceeding
         val validationErrors = mutableListOf<String>()
 
         val trimmedName = currentState.goalName.trim()
@@ -114,7 +109,6 @@ class CreateGoalViewModel @Inject constructor(
         if (currentState.targetDateMillis == null) {
             validationErrors.add("Please select a target date")
         } else {
-            // Use same validation logic as updateTargetDate
             val currentCalendar = Calendar.getInstance()
             currentCalendar.set(Calendar.HOUR_OF_DAY, 23)
             currentCalendar.set(Calendar.MINUTE, 59)
@@ -150,9 +144,10 @@ class CreateGoalViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
+                val formattedAmount = String.format(Locale.US, "%.2f", amount!!).toDouble()
                 val result = createGoalUseCase(
                     name = trimmedName,
-                    targetAmount = amount!!,
+                    targetAmount = formattedAmount,
                     targetDate = currentState.targetDateMillis
                 )
 
