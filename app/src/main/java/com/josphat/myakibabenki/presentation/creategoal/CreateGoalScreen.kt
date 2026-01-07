@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.josphat.myakibabenki.presentation.components.AppTopBar
+import com.josphat.myakibabenki.presentation.components.SuccessDialog
 import com.josphat.myakibabenki.ui.theme.MyAkibaBenkiTheme
 import java.util.Calendar
 
@@ -73,19 +74,11 @@ fun CreateGoalScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    // Handle goal creation success with toast
-    LaunchedEffect(uiState.successMessage) {
-        uiState.successMessage?.let { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            viewModel.onSuccessMessageDismissed()
-        }
-    }
-
-    // Handle goal creation success
-    LaunchedEffect(uiState.goalCreated) {
-        if (uiState.goalCreated) {
-            onGoalCreated()
-            viewModel.resetGoalCreatedState()
+    // Handle validation toast
+    LaunchedEffect(uiState.showValidationToast) {
+        if (uiState.showValidationToast) {
+            Toast.makeText(context, "Sorry! All fields required", Toast.LENGTH_SHORT).show()
+            viewModel.onValidationToastShown()
         }
     }
 
@@ -97,20 +90,39 @@ fun CreateGoalScreen(
         }
     }
 
+    // Show success dialog
+    if (uiState.showSuccessDialog) {
+        SuccessDialog(
+            goalName = uiState.createdGoalName,
+            onDismiss = {
+                viewModel.onSuccessDialogDismissed()
+            },
+            onGoToGoals = {
+                onGoalCreated()
+                viewModel.onSuccessDialogDismissed()
+                viewModel.resetGoalCreatedState()
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             AppTopBar(
                 title = "Create a Goal",
                 navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-                onNavigationClick = onNavigateBack
+                onNavigationClick = onNavigateBack,
+                showCloseIcon = true,
+                onCloseClick = onNavigateBack
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.White,
         modifier = modifier
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -123,7 +135,7 @@ fun CreateGoalScreen(
                 Text(
                     text = "Please let's have the following:",
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color.Gray,
+                        color = Color(0xFF1C1B1F),
                         fontSize = 16.sp
                     ),
                     textAlign = TextAlign.Center,
@@ -205,13 +217,17 @@ private fun GoalNameField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text("Dubai Trip") },
+            placeholder = { Text("Dubai Trip", color = Color.Gray) },
             isError = isError,
             enabled = enabled,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = if (isError) Color.Red else Color.Gray.copy(alpha = 0.5f),
-                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50)
+                unfocusedContainerColor = Color(0xFFF5F5F5),
+                focusedContainerColor = Color(0xFFF5F5F5),
+                unfocusedBorderColor = if (isError) Color.Red else Color.Transparent,
+                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
+                unfocusedTextColor = Color(0xFF1C1B1F),
+                focusedTextColor = Color(0xFF1C1B1F)
             ),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -255,8 +271,12 @@ private fun GoalCategoryField(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-                    focusedBorderColor = Color(0xFF4CAF50)
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    unfocusedTextColor = Color(0xFF1C1B1F),
+                    focusedTextColor = Color(0xFF1C1B1F)
                 ),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
@@ -318,14 +338,18 @@ private fun TargetAmountField(
                     modifier = Modifier.padding(start = 16.dp, end = 8.dp)
                 )
             },
-            placeholder = { Text("10000.00") },
+            placeholder = { Text("10000.00", color = Color.Gray) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             isError = isError,
             enabled = enabled,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = if (isError) Color.Red else Color.Gray.copy(alpha = 0.5f),
-                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50)
+                unfocusedContainerColor = Color(0xFFF5F5F5),
+                focusedContainerColor = Color(0xFFF5F5F5),
+                unfocusedBorderColor = if (isError) Color.Red else Color.Transparent,
+                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
+                unfocusedTextColor = Color(0xFF1C1B1F),
+                focusedTextColor = Color(0xFF1C1B1F)
             ),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -375,7 +399,7 @@ private fun TargetDateField(
             value = value,
             onValueChange = { },
             readOnly = true,
-            placeholder = { Text("Select date") },
+            placeholder = { Text("Select date", color = Color.Gray) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.DateRange,
@@ -392,8 +416,12 @@ private fun TargetDateField(
             isError = isError,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = if (isError) Color.Red else Color.Gray.copy(alpha = 0.5f),
-                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50)
+                unfocusedContainerColor = Color(0xFFF5F5F5),
+                focusedContainerColor = Color(0xFFF5F5F5),
+                unfocusedBorderColor = if (isError) Color.Red else Color.Transparent,
+                focusedBorderColor = if (isError) Color.Red else Color(0xFF4CAF50),
+                unfocusedTextColor = Color(0xFF1C1B1F),
+                focusedTextColor = Color(0xFF1C1B1F)
             ),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier

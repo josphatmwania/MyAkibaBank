@@ -35,7 +35,9 @@ fun AppTopBar(
     subtitle: String? = null,
     showProfile: Boolean = false,
     navigationIcon: ImageVector? = null,
-    onNavigationClick: (() -> Unit)? = null
+    onNavigationClick: (() -> Unit)? = null,
+    showCloseIcon: Boolean = false,
+    onCloseClick: (() -> Unit)? = null
 ) {
     Box(
         modifier = modifier
@@ -48,44 +50,44 @@ fun AppTopBar(
                     )
                 )
             )
-            .padding(16.dp)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Navigation icon (back/close)
+            // Navigation icon (back)
             if (navigationIcon != null && onNavigationClick != null) {
                 IconButton(
                     onClick = onNavigationClick,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
                         imageVector = navigationIcon,
-                        contentDescription = if (navigationIcon == Icons.AutoMirrored.Filled.ArrowBack) "Back" else "Close",
+                        contentDescription = "Back",
                         tint = Color.White,
                         modifier = Modifier.size(24.dp)
                     )
                 }
-                Spacer(modifier = Modifier.size(8.dp))
+                Spacer(modifier = Modifier.size(12.dp))
             }
 
             // Profile avatar (for home screen)
             if (showProfile) {
                 Box(
                     modifier = Modifier
-                        .size(56.dp)
+                        .size(48.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "👤",
-                        fontSize = 24.sp,
+                        fontSize = 20.sp,
                         color = Color.White
                     )
                 }
-                Spacer(modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.size(12.dp))
             }
 
             // Title and subtitle
@@ -96,7 +98,8 @@ fun AppTopBar(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = Color.White,
+                        fontSize = 24.sp
                     ),
                     textAlign = if (showProfile) TextAlign.Start else TextAlign.Center,
                     modifier = if (!showProfile) Modifier.fillMaxWidth() else Modifier
@@ -105,7 +108,8 @@ fun AppTopBar(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.White.copy(alpha = 0.8f)
+                            color = Color.White.copy(alpha = 0.9f),
+                            fontSize = 14.sp
                         ),
                         textAlign = if (showProfile) TextAlign.Start else TextAlign.Center,
                         modifier = if (!showProfile) Modifier.fillMaxWidth() else Modifier
@@ -114,8 +118,21 @@ fun AppTopBar(
             }
 
             // Close icon (for create goal screen)
-            if (navigationIcon == Icons.Default.Close) {
-                // Space is already handled by the navigation icon logic above
+            if (showCloseIcon && onCloseClick != null) {
+                IconButton(
+                    onClick = onCloseClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            } else if (showProfile) {
+                // Add spacing for profile view
+                Spacer(modifier = Modifier.size(40.dp))
             }
         }
     }

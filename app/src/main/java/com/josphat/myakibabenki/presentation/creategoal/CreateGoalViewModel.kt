@@ -140,7 +140,8 @@ class CreateGoalViewModel @Inject constructor(
                 isGoalNameValid = trimmedName.isNotBlank() && trimmedName.length >= 2,
                 isTargetAmountValid = amount != null && amount > 0 && amount <= 999999999.99,
                 isTargetDateValid = currentState.targetDateMillis != null &&
-                        currentState.targetDateMillis > todayEndMillis
+                        currentState.targetDateMillis > todayEndMillis,
+                showValidationToast = true
             )
             return
         }
@@ -161,7 +162,9 @@ class CreateGoalViewModel @Inject constructor(
                             isLoading = false,
                             error = null,
                             goalCreated = true,
-                            successMessage = "Goal saved successfully"
+                            successMessage = "Goal saved successfully",
+                            showSuccessDialog = true,
+                            createdGoalName = trimmedName
                         )
                     },
                     { throwable ->
@@ -190,5 +193,13 @@ class CreateGoalViewModel @Inject constructor(
 
     fun resetGoalCreatedState() {
         _uiState.value = _uiState.value.copy(goalCreated = false)
+    }
+
+    fun onValidationToastShown() {
+        _uiState.value = _uiState.value.copy(showValidationToast = false)
+    }
+
+    fun onSuccessDialogDismissed() {
+        _uiState.value = _uiState.value.copy(showSuccessDialog = false, createdGoalName = "")
     }
 }

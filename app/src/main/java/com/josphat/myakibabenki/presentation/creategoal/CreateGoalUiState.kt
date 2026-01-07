@@ -17,7 +17,10 @@ data class CreateGoalUiState(
     val isTargetAmountValid: Boolean = true,
     val isTargetDateValid: Boolean = true,
     val goalCreated: Boolean = false,
-    val successMessage: String? = null
+    val successMessage: String? = null,
+    val showValidationToast: Boolean = false,
+    val showSuccessDialog: Boolean = false,
+    val createdGoalName: String = ""
 ) {
     val isFormValid: Boolean
         get() {
