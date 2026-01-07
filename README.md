@@ -9,9 +9,9 @@ My Akiba Benki is an Android application that helps users create savings goals a
 My Akiba Benki is built with the Model-View-ViewModel (MVVM) architecture with Repository pattern which is used to separate the app's user interface, logic, and data.
 
 - **Model**: Represents the data and the business logic of the app. ~ It's the actual data and data sources, like databases or network requests.
-- **View**: Represents the UI of the app. In your app, it would be the Jetpack Compose components that display the weather data to the user.
+- **View**: Represents the UI of the app. In your app, it would be the Jetpack Compose components that display the Savings goals data to the user.
 - **ViewModel**: It holds the data that the View needs, exposing this data through StateFlow.
-- **Repository**: This is an additional layer between the ViewModel and the data source (in this case, the OpenWeatherMap API). ~ The Repository centralizes the data fetching mechanism, so if in the future we decide to add another data source, such as a local database for offline caching, the ViewModel wouldn't need to know where the data is coming from. The Repository will handle data retrieval, whether it's from the API, local database, or other sources.
+- **Repository**: This is an additional layer between the ViewModel and the data source. The Repository will handle data retrieval, whether it's from the API, local database, or other sources.
 
 ~ In essence, this architecture ensures a separation of concerns, promoting a more scalable and maintainable codebase. It decouples the UI from the data and business logic, allowing each component to evolve independently as shown below.
 ![mvvm_arch.png](app/screenshots/mvvm_arch.png)
