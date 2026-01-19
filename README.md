@@ -54,20 +54,10 @@ My Akiba Benki is built with the Model-View-ViewModel (MVVM) architecture with R
 ![Database_Inspection.jpg](app/screenshots/Database_Inspection.jpg)
 ## Setting the Project Locally
 
-- Git clone
+- Git clone (https://github.com/josphatmwania/MyAkibaBank)
+- Use _Java 17_ and above
 - Use Android Studio IDE Koala Feature Drop and above.
 
-
-### Future Improvements
-
-- Show The total goals screen
-- Show the the transactions 
-
-### Trade-offs and limitation
-- Limited time to scale up the project
-- 
-### Assumptions made 
-- Added more Goal Category dummy data for dropdown options.
 
 #### License
 

@@ -57,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.josphat.myakibabenki.presentation.components.AppTopBar
 import com.josphat.myakibabenki.presentation.components.SuccessDialog
 import com.josphat.myakibabenki.ui.theme.MyAkibaBenkiTheme
@@ -70,7 +71,7 @@ fun CreateGoalScreen(
     modifier: Modifier = Modifier,
     viewModel: CreateGoalViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
