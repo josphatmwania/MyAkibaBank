@@ -47,17 +47,26 @@ My Akiba Benki is built with the Model-View-ViewModel (MVVM) architecture with R
 <img src="./screenshots/goal.png" alt="Goal Created Success Dialog" width="300"/>
 
 
-
 ## Database Inspection
-
 
 ![Database_Inspection.jpg](app/screenshots/Database_Inspection.jpg)
 ## Setting the Project Locally
 
-- Git clone (https://github.com/josphatmwania/MyAkibaBank)
-- Use _Java 17_ and above
-- Use Android Studio IDE Koala Feature Drop and above.
 
+### Prerequisites
+
+- Android Studio Iguana | 2023.2.1 or newer.
+- Android SDK 29 or newer.
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/josphatmwania/MyAkibaBank
+   ```
+2. Open the project in Android Studio.
+3. Let Gradle sync and download the required dependencies.
+4. Run the app on an emulator or a physical device.
 
 #### License
 
